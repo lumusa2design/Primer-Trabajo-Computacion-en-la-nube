@@ -1,0 +1,78 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Description: CRUD API para Computacion en la Nube
+
+Resources:
+
+  ItemsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Items
+      BillingMode: PAY_PER_REQUEST
+
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+
+  CrudFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+
+      CodeUri: src/
+
+      Handler: app.lambda_handler
+
+      Runtime: python3.13
+
+      Timeout: 10
+
+      Environment:
+        Variables:
+          TABLE_NAME: Items
+
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: Items
+
+      Events:
+
+        CreateItem:
+          Type: Api
+          Properties:
+            Path: /items
+            Method: post
+
+        GetItems:
+          Type: Api
+          Properties:
+            Path: /items
+            Method: get
+
+        GetItem:
+          Type: Api
+          Properties:
+            Path: /items/{id}
+            Method: get
+
+        UpdateItem:
+          Type: Api
+          Properties:
+            Path: /items/{id}
+            Method: put
+
+        DeleteItem:
+          Type: Api
+          Properties:
+            Path: /items/{id}
+            Method: delete
+
+Outputs:
+
+  ApiUrl:
+    Description: URL API Gateway
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"

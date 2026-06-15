@@ -39,3 +39,27 @@ flowchart TD
 1. El usuario accede a la aplicación web alojada en el S3 a través del navegador.
 2. El *frontend* muestra la interfaz y le permite hacer las diferentes operaciones CRUD sobre los datos.
 3. Cuando el usuario realiza una de las acciones, el navegador envía una petición HTTP hacia la API Gateway
+4. API Gateway  actúa como punto único de entrada y recibe todas las solicitudes externas mediante HTTPS
+5. API Gateway redirige la petición a la función Lambda correspondiente usando la integración Lambda Proxy.
+6. La función Lambda procesa la solicitud , valida los datos y ejecuta la operación necesaria por DynamoDB.
+7. DynamoDB almacena o recupera la información solicitada
+8. Lambda genera una respuesta en formato JSON y la devuelve a API Gateway.
+9. API Gateway envia la respuesta al navegador del usuario.
+10. El *frontend* actualiza la interfaz.
+
+## Papel del API Gateway
+
+En esta arquitectura no se utiliza un balanceador de carga tradicional porque no existen instancias EC2 ni contenedores detras de la aplicación.
+
+API Gateway cumple la función de proxy inverso gestionado por AWS y proporciona:
+
+- Recepción de solicitudes HTTP y HTTPS.
+- Gestión de rutas y métodos HTTP.
+- Integración con funciones Lambda.
+- Configuración de CORS.
+- Gestión centralizada del acceso de la API
+- Escalado automático.
+
+Además, Lambda escala automaticamente según el número de solicitudes recibidas, por lo que no es necesario implementar mecanismos adicionales de balanceo de carga.
+
+## Seguridad de la arquitectura

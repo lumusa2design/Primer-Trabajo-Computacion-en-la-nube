@@ -63,3 +63,71 @@ API Gateway cumple la función de proxy inverso gestionado por AWS y proporciona
 Además, Lambda escala automaticamente según el número de solicitudes recibidas, por lo que no es necesario implementar mecanismos adicionales de balanceo de carga.
 
 ## Seguridad de la arquitectura
+
+Esta arquitectura trata de minimizar la superficie de exposición a Internet.
+
+- El único elemento accesible es el API Gateway mediante https
+- No se puede acceder directamente a la función lambda a través de internet
+- DynamoDB no expone puertos ni conexiones públicas
+- No se requiere acceso por SSH ni apertura de puertos.
+- La comunicación entre los servicios de AWS se realiza mediante permisos IAM y servicios gestionados.
+
+## Despliegue manual
+
+El despliegue se realiza siguiendo los siguientes pasos:
+
+### 1. Creación de la tabla DynamoDB
+
+Se crea una tabla en Amazon DynamoDB que almacenará los registros gestionados por la aplicación.
+
+Durante esta configuración se define: 
+
+- Nombre de la tabla
+- Clave Primaria
+- Configuración de capacidad bajo demanda
+
+### 2. Creación de la función lambda
+
+Se crea una función Lambda usando Python como lenguaje de programación.
+
+La función contiene:
+
+* La lógica CRUD.
+* La conexión con DynamoDB mediante boto3.
+* El procesamiento de eventos enviados por API Gateway.
+* La generación de respuestas JSON para el frontend.
+
+### 3. Configurar la API Gateway
+
+Se crea una API REST y se configuran las rutas necesarias.
+
+Cada ruta se asocia a la función Lambda correspondiente mediante integración Lambda Proxy.
+
+También se configuran:
+
+* Métodos HTTP.
+* Parámetros de ruta.
+* Respuestas HTTP.
+* Configuración CORS.
+
+
+### 4. Subir el *frontend* a Amazon S3
+
+Se crea un bucket S3 configurado como Static Website Hosting.
+
+Posteriormente se cargan los archivos del frontend:
+
+* index.html
+* styles.css
+* script.js
+* docs.html
+
+El bucket proporciona una URL pública desde la que los usuarios pueden acceder a la aplicación.
+
+### 5. Configurar CORS
+
+Se habilita CORS para permitir que el frontend alojado en S3 pueda consumir la API publicada en API Gateway.
+
+Esta configuración permite que el navegador autorice las solicitudes entre ambos servicios, evitando errores de seguridad relacionados con el mismo origen (Same-Origin Policy).
+
+## Despliegue automático

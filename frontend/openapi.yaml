@@ -1,0 +1,92 @@
+openapi: 3.0.3
+info:
+  title: AWS CRUD API
+  version: 1.0.0
+  description: API CRUD desplegada con API Gateway, Lambda y DynamoDB.
+
+servers:
+  - url: https://ottmhhabm6.execute-api.us-east-1.amazonaws.com/Prod
+    description: API desplegada automáticamente con AWS SAM
+
+paths:
+  /ItemsSam:
+    get:
+      summary: Obtener todos los items
+      responses:
+        "200":
+          description: Lista de items
+    post:
+      summary: Crear un nuevo item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ItemInput"
+      responses:
+        "201":
+          description: Item creado
+
+  /ItemsSam/{id}:
+    get:
+      summary: Obtener item por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Item encontrado
+        "404":
+          description: Item no encontrado
+
+    put:
+      summary: Actualizar item existente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ItemInput"
+      responses:
+        "200":
+          description: Item actualizado
+
+    delete:
+      summary: Eliminar item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Item eliminado
+
+components:
+  schemas:
+    ItemInput:
+      type: object
+      required:
+        - name
+        - description
+        - category
+      properties:
+        name:
+          type: string
+          example: Item de prueba
+        description:
+          type: string
+          example: Descripción del item
+        category:
+          type: string
+          example: demo

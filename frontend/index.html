@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AWS CRUD Panel</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<header class="hero">
+  <div>
+    <p class="badge">AWS Serverless CRUD</p>
+    <h1>Panel de gestión de Items</h1>
+    <p>Frontend local conectado a API Gateway, Lambda y DynamoDB.</p>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="panel">
+    <h2>Crear nuevo item</h2>
+
+    <div class="form-grid">
+      <input id="name" placeholder="Nombre" />
+      <input id="description" placeholder="Descripción" />
+      <input id="category" placeholder="Categoría" />
+    </div>
+
+    <button class="primary" onclick="createItem()">Crear item</button>
+  </section>
+
+  <section class="panel">
+    <div class="section-header">
+      <h2>Items almacenados</h2>
+      <button onclick="loadItems()">Recargar</button>
+    </div>
+
+    <div id="status" class="status">Listo.</div>
+    <div id="items" class="cards"></div>
+  </section>
+
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

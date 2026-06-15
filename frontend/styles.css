@@ -1,0 +1,143 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f4f6f8;
+  color: #1f2937;
+}
+
+.hero {
+  background: linear-gradient(135deg, #111827, #1f2937);
+  color: white;
+  padding: 50px 30px;
+}
+
+.hero h1 {
+  margin: 10px 0;
+  font-size: 42px;
+}
+
+.hero p {
+  margin: 0;
+  color: #d1d5db;
+}
+
+.badge {
+  display: inline-block;
+  background: #2563eb;
+  color: white !important;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 14px;
+}
+
+.container {
+  width: min(1100px, 92%);
+  margin: 30px auto;
+}
+
+.panel {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-bottom: 16px;
+}
+
+input {
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 15px;
+}
+
+button {
+  border: none;
+  border-radius: 10px;
+  padding: 11px 16px;
+  cursor: pointer;
+  background: #e5e7eb;
+  font-weight: bold;
+}
+
+button:hover {
+  filter: brightness(0.95);
+}
+
+.primary {
+  background: #2563eb;
+  color: white;
+}
+
+.danger {
+  background: #dc2626;
+  color: white;
+}
+
+.warning {
+  background: #f59e0b;
+  color: white;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.status {
+  margin: 10px 0 20px;
+  padding: 10px;
+  background: #eef2ff;
+  border-radius: 10px;
+  color: #3730a3;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 16px;
+  background: #fafafa;
+}
+
+.card h3 {
+  margin-top: 0;
+}
+
+.card-id {
+  font-size: 12px;
+  color: #6b7280;
+  word-break: break-all;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+@media (max-width: 800px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero h1 {
+    font-size: 30px;
+  }
+}

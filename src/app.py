@@ -1,19 +1,14 @@
 import json
 import uuid
 import os
-
 from datetime import datetime, timezone
 
 import boto3
-from boto3.dynamodb.conditions import Key
-
 
 TABLE_NAME = os.environ.get("TABLE_NAME", "Items")
 
 dynamodb = boto3.resource("dynamodb")
-
 table = dynamodb.Table(TABLE_NAME)
-
 
 
 def build_response(status_code, body):
@@ -34,7 +29,13 @@ def get_now():
 
 
 def lambda_handler(event, context):
+    print(json.dumps(event))
+
     method = event.get("httpMethod")
+
+    if not method:
+        method = event.get("requestContext", {}).get("http", {}).get("method")
+
     path_parameters = event.get("pathParameters") or {}
     item_id = path_parameters.get("id")
 
@@ -56,11 +57,14 @@ def lambda_handler(event, context):
     if method == "DELETE" and item_id:
         return delete_item(item_id)
 
-    return build_response(400, {"error": "Método o ruta no soportado"})
+    return build_response(400, {
+        "error": "Método o ruta no soportado",
+        "method": method,
+        "item_id": item_id
+    })
 
 
 def create_item(event):
-
     body = json.loads(event.get("body") or "{}")
 
     item = {
@@ -74,58 +78,39 @@ def create_item(event):
 
     table.put_item(Item=item)
 
-    return build_response(
-        201,
-        {
-            "message": "Item creado correctamente",
-            "item": item
-        }
-    )
+    return build_response(201, {
+        "message": "Item creado correctamente",
+        "item": item
+    })
 
 
 def get_item(item_id):
-
-    response = table.get_item(
-        Key={
-            "id": item_id
-        }
-    )
-
-    item = response.get("Item")
+    result = table.get_item(Key={"id": item_id})
+    item = result.get("Item")
 
     if not item:
-        return build_response(
-            404,
-            {
-                "message": "Item no encontrado"
-            }
-        )
+        return build_response(404, {
+            "message": "Item no encontrado",
+            "id": item_id
+        })
 
-    return build_response(
-        200,
-        item
-    )
+    return build_response(200, item)
+
 
 def get_all_items():
+    result = table.scan()
+    items = result.get("Items", [])
 
-    response = table.scan()
-
-    items = response.get("Items", [])
-
-    return build_response(
-        200,
-        items
-    )
+    return build_response(200, {
+        "items": items
+    })
 
 
 def update_item(item_id, event):
-
     body = json.loads(event.get("body") or "{}")
 
     table.update_item(
-        Key={
-            "id": item_id
-        },
+        Key={"id": item_id},
         UpdateExpression="""
             SET #n = :n,
                 description = :d,
@@ -143,25 +128,16 @@ def update_item(item_id, event):
         }
     )
 
-    return build_response(
-        200,
-        {
-            "message": "Item actualizado correctamente"
-        }
-    )
+    return build_response(200, {
+        "message": "Item actualizado correctamente",
+        "id": item_id
+    })
 
 
 def delete_item(item_id):
+    table.delete_item(Key={"id": item_id})
 
-    table.delete_item(
-        Key={
-            "id": item_id
-        }
-    )
-
-    return build_response(
-        200,
-        {
-            "message": "Item eliminado correctamente"
-        }
-    )
+    return build_response(200, {
+        "message": "Item eliminado correctamente",
+        "id": item_id
+    })

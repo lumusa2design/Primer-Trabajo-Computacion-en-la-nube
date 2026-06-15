@@ -125,4 +125,31 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+async function getItemById() {
+  const id = document.getElementById("searchId").value.trim();
+
+  if (!id) {
+    setStatus("Introduce un ID.");
+    return;
+  }
+
+  setStatus("Buscando item...");
+
+  const response = await fetch(`${API_URL}/items/${id}`);
+
+  if (!response.ok) {
+    setStatus("Item no encontrado.");
+    return;
+  }
+
+  const item = await response.json();
+
+  itemsContainer.innerHTML = "";
+
+  renderItem(item);
+
+  setStatus("Item encontrado.");
+}
+
+
 loadItems();

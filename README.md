@@ -131,3 +131,132 @@ Se habilita CORS para permitir que el frontend alojado en S3 pueda consumir la A
 Esta configuración permite que el navegador autorice las solicitudes entre ambos servicios, evitando errores de seguridad relacionados con el mismo origen (Same-Origin Policy).
 
 ## Despliegue automático
+
+La aplicación incluye un archivo template.yaml basado en AWS SAM (Serverless Application Model).
+
+AWS SAM permite definir la infraestructura como código, facilitando la creación automática de todos los recursos necesarios para ejecutar la aplicación.
+
+Entre los recursos definidos se encuentran:
+
+* Funciones Lambda.
+* API Gateway.
+* Permisos IAM.
+* Variables de entorno.
+* Configuración de eventos y rutas.
+
+### Construcción del proyecto
+
+Antes del despliegue se ejecuta:
+
+bash
+sam build
+
+
+Este comando:
+
+* Analiza el archivo template.yaml.
+* Prepara los artefactos necesarios.
+* Empaqueta el código de las funciones Lambda.
+
+### Despliegue de la infraestructura
+
+Posteriormente se ejecuta:
+
+bash
+sam deploy --stack-name aws-crud-practice-sam --capabilities CAPABILITY_IAM
+
+
+Este comando:
+
+* Crea una pila de AWS CloudFormation.
+* Despliega automáticamente los recursos definidos.
+* Configura las relaciones entre servicios.
+* Actualiza la infraestructura cuando existen cambios.
+
+Durante el desarrollo se reutilizó el rol *LabRole* proporcionado por AWS Academy para evitar restricciones relacionadas con la creación de nuevos roles IAM dentro del entorno académico.
+
+## Operaciones disponibles
+
+La API expone las siguientes operaciones CRUD:
+
+### Crear elemento
+
+*POST /ItemsSam*
+
+Permite crear un nuevo registro en DynamoDB.
+
+Ejemplo de cuerpo de la petición:
+
+json
+{
+  "id": "1",
+  "nombre": "Producto A"
+}
+
+
+### Obtener todos los elementos
+
+*GET /ItemsSam*
+
+Recupera todos los registros almacenados en la tabla.
+
+### Obtener un elemento por ID
+
+*GET /ItemsSam/{id}*
+
+Recupera un registro específico utilizando su identificador único.
+
+Ejemplo:
+
+http
+GET /ItemsSam/1
+
+
+### Actualizar un elemento
+
+*PUT /ItemsSam/{id}*
+
+Permite modificar la información de un registro existente.
+
+Ejemplo:
+
+http
+PUT /ItemsSam/1
+
+
+### Eliminar un elemento
+
+*DELETE /ItemsSam/{id}*
+
+Elimina un registro de la base de datos utilizando su identificador.
+
+Ejemplo:
+
+http
+DELETE /ItemsSam/1
+
+## Tratamiento de la información
+
+La información intercambiada entre los componentes sigue el siguiente recorrido:
+
+1. El usuario introduce datos en el formulario del frontend.
+2. El navegador genera una petición HTTP con contenido JSON.
+3. API Gateway recibe la solicitud y la transforma en un evento para Lambda.
+4. Lambda procesa el evento y ejecuta la operación correspondiente.
+5. DynamoDB almacena o recupera los datos solicitados.
+6. Lambda genera una respuesta estructurada en formato JSON.
+7. API Gateway devuelve la respuesta al cliente.
+8. El frontend interpreta la respuesta y actualiza la interfaz de usuario.
+
+Este flujo garantiza una separación clara entre presentación, lógica de negocio y almacenamiento de datos.
+
+## Documentación
+
+La documentación automática de la API se proporciona mediante OpenAPI/Swagger y está disponible a través del archivo docs.html.
+
+Esta documentación permite:
+
+* Consultar los endpoints disponibles.
+* Visualizar los métodos HTTP soportados.
+* Revisar parámetros y respuestas.
+* Probar las operaciones directamente desde la interfaz Swagger.

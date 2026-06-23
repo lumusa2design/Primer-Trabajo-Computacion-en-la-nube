@@ -106,6 +106,7 @@ La configuración incluye:
 * Modo de facturación bajo demanda (*Pay Per Request*).
 
 ![Tabla DynamoDB](media/dynamodb_table.png)
+![Elementos de la tabla dynamo](media/elementos_tabla_dynamo.png)
 
 
 ### 2. Creación de las funciones Lambda
@@ -182,7 +183,15 @@ Este comando:
 * Prepara los artefactos necesarios.
 * Empaqueta el código de las funciones Lambda.
 
-### Despliegue de la infraestructura
+### Validación de la plantilla
+
+Antes de construir y desplegar la infraestructura se verificó que la plantilla AWS SAM fuese correcta mediante el comando:
+
+```bash
+sam validate --lint
+```
+![sam validate](./media/sam_validate.png)
+
 
 ```bash
 sam deploy --stack-name aws-crud-practice-sam --capabilities CAPABILITY_IAM
@@ -483,4 +492,37 @@ Por tanto:
 Una vez finalizado el desarrollo, el coste recurrente de operación de la aplicación sería únicamente el derivado de los servicios AWS utilizados, estimado en aproximadamente **1,63 € mensuales** para el escenario considerado.
 
 Estos resultados muestran una de las principales ventajas de las arquitecturas serverless: el coste de infraestructura es muy reducido y la mayor parte de la inversión inicial corresponde al tiempo de desarrollo de la solución.
+
+# Enlaces del proyecto
+
+## Repositorio fuente
+
+El código fuente completo de la aplicación se encuentra disponible en el siguiente repositorio:
+
+**GitHub:**
+https://github.com/lumusa2design/Primer-Trabajo-Computacion-en-la-nube
+
+## Aplicación desplegada
+
+La aplicación se encuentra desplegada en Amazon S3 y puede accederse mediante el siguiente enlace:
+
+**Frontend:**
+http://luis-munoz-crud-frontend-223977122891-us-east-1-an.s3-website-us-east-1.amazonaws.com
+
+## Documentación Swagger
+
+La documentación interactiva de la API se encuentra disponible en:
+
+**Swagger UI:**
+http://luis-munoz-crud-frontend-223977122891-us-east-1-an.s3-website-us-east-1.amazonaws.com/docs.html
+
+## API
+
+La API se encuentra publicada mediante Amazon API Gateway:
+
+**API Base URL**:
+https://ndv7jgla69.execute-api.us-east-1.amazonaws.com/prod
+
+**Endpoint de listado**:
+https://ndv7jgla69.execute-api.us-east-1.amazonaws.com/prod/items
 

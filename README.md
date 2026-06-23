@@ -526,3 +526,31 @@ https://ndv7jgla69.execute-api.us-east-1.amazonaws.com/prod
 **Endpoint de listado**:
 https://ndv7jgla69.execute-api.us-east-1.amazonaws.com/prod/items
 
+
+# Bibliografía
+
+[1] Amazon Web Services. Amazon API Gateway Documentation. Disponible en: https://docs.aws.amazon.com/apigateway/
+
+[2] Amazon Web Services. AWS Lambda Documentation. Disponible en: https://docs.aws.amazon.com/lambda/
+
+[3] Amazon Web Services. Amazon DynamoDB Documentation. Disponible en: https://docs.aws.amazon.com/dynamodb/
+
+[4] Amazon Web Services. Amazon S3 Documentation. Disponible en: https://docs.aws.amazon.com/s3/
+
+[5] Amazon Web Services. AWS Serverless Application Model (AWS SAM). Disponible en: https://docs.aws.amazon.com/serverless-application-model/
+
+[6] OpenAPI Initiative. OpenAPI Specification. Disponible en: https://www.openapis.org/
+
+[7] Swagger. Swagger UI Documentation. Disponible en: https://swagger.io/tools/swagger-ui/
+
+[8] Amazon Web Services. AWS Pricing Calculator. Disponible en: https://calculator.aws/
+
+
+# Uso de herramientas de inteligencia artificial
+Durante el desarrollo de esta práctica, se usaron herramientas de inteligencia artificial para ayudar en tareas como consultar información, revisar la documentación, encontrar errores y mejorar la forma en que se escribió la memoria.
+
+El autor de la práctica fue responsable de todas las decisiones relacionadas con el diseño, la implementación y la configuración de los servicios de AWS. También realizó y verificó todas las pruebas y comprobó que la aplicación funcionara correctamente.
+
+Las herramientas de inteligencia artificial se utilizaron como ayuda técnica y para la documentación, pero no reemplazaron el trabajo de desarrollo, comprensión y validación de la solución que se implementó.
+
+

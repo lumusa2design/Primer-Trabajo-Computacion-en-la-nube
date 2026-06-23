@@ -203,6 +203,114 @@ Permite modificar un registro existente.
 
 Elimina un registro existente.
 
+
+## Pruebas de funcionamiento de la API
+
+Para verificar el correcto funcionamiento del sistema se realizaron pruebas sobre todos los endpoints CRUD expuestos por API Gateway.
+
+### Crear elemento — POST /items
+
+Para verificar la operación de creación se realizó una petición POST a la API con los datos de un nuevo elemento.
+
+Comando utilizado:
+
+```powershell
+$body = @{
+    name = "Prueba memoria"
+    description = "Elemento creado para documentar las pruebas CRUD"
+    category = "documentacion"
+} | ConvertTo-Json
+
+Invoke-RestMethod `
+-Uri "https://ndv7jgla69.execute-api.us-east-1.amazonaws.com/prod/items" `
+-Method POST `
+-Body $body `
+-ContentType "application/json"
+```
+![Prueba POST](media/create_test.png)
+
+### Obtener todos los elementos — GET /items
+
+Para verificar la operación de consulta global se realizó una petición GET al endpoint principal de la API.
+
+Comando utilizado:
+
+```powershell
+$response = Invoke-RestMethod `
+-Uri "https://ndv7jgla69.execute-api.us-east-1.amazonaws.com/prod/items" `
+-Method GET
+
+$response.items | Format-Table id, name, category -AutoSize
+```
+![Prueba GET](media/get_all_test.png)
+
+### Obtener un elemento por ID — GET /items/{id}
+
+Para verificar la operación de consulta individual se realizó una petición GET indicando el identificador de un elemento previamente almacenado en la base de datos.
+
+Comando utilizado:
+
+```powershell
+Invoke-RestMethod `
+-Uri "https://ndv7jgla69.execute-api.us-east-1.amazonaws.com/prod/items/25ef25ee-8200-4623-9eb3-65b980dde67c" `
+-Method GET | ConvertTo-Json
+```
+
+Resultado obtenido:
+
+![Prueba GET por ID](media/get_by_id_test.png)
+
+La API devolvió correctamente la información asociada al identificador solicitado, demostrando el correcto funcionamiento de la búsqueda individual de registros almacenados en DynamoDB.
+
+### Actualizar un elemento — PUT /items/{id}
+
+Para verificar la operación de actualización se realizó una petición PUT sobre un elemento existente, modificando varios de sus atributos.
+
+Comando utilizado:
+
+```powershell
+$body = @{
+    name = "Prueba memoria actualizada"
+    description = "Registro actualizado durante las pruebas"
+    category = "actualizado"
+} | ConvertTo-Json
+
+Invoke-RestMethod `
+-Uri "https://ndv7jgla69.execute-api.us-east-1.amazonaws.com/prod/items/25ef25ee-8200-4623-9eb3-65b980dde67c" `
+-Method PUT `
+-Body $body `
+-ContentType "application/json"
+```
+
+Resultado obtenido:
+
+![Prueba PUT](media/update_test.png)
+
+La API respondió correctamente indicando que el elemento había sido actualizado. Esta operación demuestra el correcto funcionamiento de la modificación de registros existentes en DynamoDB.
+
+### Verificación de la actualización — GET /items/{id}
+
+Tras realizar la operación de actualización se ejecutó una nueva consulta sobre el mismo elemento para verificar que los cambios se habían almacenado correctamente en DynamoDB.
+
+Comando utilizado:
+
+```powershell
+Invoke-RestMethod `
+-Uri "https://ndv7jgla69.execute-api.us-east-1.amazonaws.com/prod/items/25ef25ee-8200-4623-9eb3-65b980dde67c" `
+-Method GET | ConvertTo-Json
+```
+
+Resultado obtenido:
+
+![Verificación actualización](media/update_verification_test.png)
+
+La respuesta muestra los nuevos valores almacenados en la base de datos, confirmando que la operación de actualización se realizó correctamente y que la información persistió en DynamoDB.
+
+
+### Eliminar elemento — DELETE /items/{id}
+[comando o captura]
+
+
 ## Documentación
 
 La documentación de la API se proporciona mediante OpenAPI/Swagger y está disponible a través de `docs.html`.

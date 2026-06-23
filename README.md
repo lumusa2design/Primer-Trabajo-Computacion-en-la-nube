@@ -28,7 +28,7 @@ flowchart TD
 
     DB[Amazon DynamoDB<br>Items]
 
-    U -->|HTTPS| S3
+    U -->|HTTP| S3
     S3 -->|REST API| APIGW
 
     APIGW --> C
@@ -41,6 +41,19 @@ flowchart TD
     U2 --> DB
     D --> DB
 ```
+
+## Desacoplamiento de la solución
+
+La arquitectura se ha diseñado siguiendo un enfoque desacoplado. Cada operación CRUD se implementa mediante una función Lambda independiente:
+
+- CreateItemFunction
+- ReadItemFunction
+- UpdateItemFunction
+- DeleteItemFunction
+
+Esta separación permite mantener responsabilidades claramente diferenciadas, facilita el mantenimiento del código y mejora la escalabilidad de la solución, ya que cada función puede evolucionar independientemente del resto.
+
+![Funciones Lambda separadas](media/lambdas.png)
 
 ## Explicación del flujo
 
@@ -92,6 +105,9 @@ La configuración incluye:
 * Clave primaria (`id`).
 * Modo de facturación bajo demanda (*Pay Per Request*).
 
+![Tabla DynamoDB](media/dynamodb_table.png)
+
+
 ### 2. Creación de las funciones Lambda
 
 Se crean cuatro funciones Lambda independientes:
@@ -102,6 +118,8 @@ Se crean cuatro funciones Lambda independientes:
 * `DeleteItemFunction`
 
 Cada función contiene únicamente la lógica correspondiente a su operación CRUD.
+
+![Funciones Lambda](media/lambdas.png)
 
 ### 3. Configuración de API Gateway
 
@@ -115,6 +133,9 @@ Se crea una API HTTP y se configuran las siguientes rutas:
 
 Cada ruta se asocia a la función Lambda correspondiente.
 
+![Rutas API Gateway](media/apigateway_routes.png)
+
+
 ### 4. Despliegue del frontend en S3
 
 Se crea un bucket S3 configurado como alojamiento web estático (*Static Website Hosting*).
@@ -126,13 +147,18 @@ Posteriormente se cargan los archivos:
 * `script.js`
 * `docs.html`
 
+![s3 frontend](media/s3.png)
+![Frontend funcionando](media/frontend_funcionando.png)
+
+Figura X. Aplicación web ejecutándose desde el bucket S3.
+
 ### 5. Configuración de CORS
 
 Se habilita CORS para permitir que el frontend alojado en S3 pueda comunicarse con API Gateway.
 
 ## Despliegue automático
 
-La aplicación incluye un archivo `template.yaml` basado en AWS SAM (*Serverless Application Model*).
+Aunque la infraestructura final fue ajustada manualmente en AWS durante el desarrollo, se incluye una plantilla AWS SAM equivalente que permite reproducir la arquitectura mediante Infrastructure as Code.
 
 Mediante AWS SAM es posible definir la infraestructura como código (*Infrastructure as Code*), automatizando la creación de los recursos necesarios.
 
@@ -307,8 +333,42 @@ Resultado obtenido:
 La respuesta muestra los nuevos valores almacenados en la base de datos, confirmando que la operación de actualización se realizó correctamente y que la información persistió en DynamoDB.
 
 
-### Eliminar elemento — DELETE /items/{id}
-[comando o captura]
+### Eliminar un elemento — DELETE /items/{id}
+
+Para verificar la operación de eliminación se realizó una petición DELETE sobre un elemento existente en la base de datos.
+
+Comando utilizado:
+
+```powershell
+Invoke-RestMethod `
+-Uri "https://ndv7jgla69.execute-api.us-east-1.amazonaws.com/prod/items/25ef25ee-8200-4623-9eb3-65b980dde67c" `
+-Method DELETE
+```
+
+Resultado obtenido:
+
+![Prueba DELETE](media/delete_test.png)
+
+La API respondió correctamente indicando que el elemento había sido eliminado de la base de datos.
+
+### Verificación de la eliminación — GET /items/{id}
+
+Para comprobar que el elemento había sido eliminado correctamente, se realizó una nueva consulta utilizando el mismo identificador.
+
+Comando utilizado:
+
+```powershell
+Invoke-RestMethod `
+-Uri "https://ndv7jgla69.execute-api.us-east-1.amazonaws.com/prod/items/25ef25ee-8200-4623-9eb3-65b980dde67c" `
+-Method GET
+```
+
+Resultado obtenido:
+
+![Verificación DELETE](media/delete_verification_test.png)
+
+La API devolvió un error indicando que el elemento solicitado no existe. Esto confirma que la operación de eliminación se realizó correctamente y que el registro fue eliminado de DynamoDB.
+
 
 
 ## Documentación
@@ -321,6 +381,14 @@ Esta documentación permite:
 * Visualizar los métodos HTTP soportados.
 * Revisar parámetros y respuestas.
 * Probar las operaciones directamente desde la interfaz Swagger.
+
+### Interfaz Swagger
+
+La documentación OpenAPI se encuentra integrada en la aplicación mediante Swagger UI, permitiendo consultar y probar todos los endpoints disponibles desde una interfaz web.
+
+![Swagger UI](media/swagger.png)
+
+Figura X. Documentación automática de la API mediante Swagger.
 
 
 # Estimación de costes
